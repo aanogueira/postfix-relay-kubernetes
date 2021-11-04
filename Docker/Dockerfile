@@ -1,6 +1,7 @@
-FROM alpine:3.12.1
+FROM alpine:3.12.2
 
-MAINTAINER Eldad Assis <eldad.assis@gmail.com>
+LABEL maintainer=aanogueira
+LABEL contact=aanogueira@protonmail.com
 
 # Install postfix and supervisor
 RUN apk add --no-cache \

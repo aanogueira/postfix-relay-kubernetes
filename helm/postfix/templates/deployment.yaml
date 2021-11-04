@@ -28,20 +28,20 @@ spec:
       serviceAccountName: {{ template "postfix.serviceAccountName" . }}
       containers:
       {{- if .Values.metrics.enabled }}
-        - name: metrics
-          image: "{{ .Values.metrics.image.repository }}:{{ tpl .Values.metrics.image.tag . }}"
-          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
-          ports:
-            - name: metrics
-              containerPort: 9154
-              protocol: TCP
-          volumeMounts:
-          - name: varlog
-            mountPath: /var/log
-          - name: spool
-            mountPath: /var/spool/postfix
-          resources:
-            {{- toYaml .Values.metrics.resources | nindent 12 }}
+      - name: metrics
+        image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+        ports:
+          - name: metrics
+            containerPort: 9154
+            protocol: TCP
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: spool
+          mountPath: /var/spool/postfix
+        resources:
+          {{- toYaml .Values.metrics.resources | nindent 12 }}
       {{- end }}
       - name: {{ template "postfix.name" . }}
         image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
@@ -67,30 +67,43 @@ spec:
             configMapKeyRef:
               name: {{ template "postfix.fullname" . }}
               key: tx-smtp-relay-username
+        {{- if .Values.smtp.relayPassword }}
         - name: TX_SMTP_RELAY_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "postfix.fullname" . }}
               key: tx-smtp-relay-password
+        {{- else }}
+        - name: TX_SMTP_RELAY_PASSWORD
+          value: ""
+        {{- end }}
         - name: POSTFIX_CUSTOM_CONFIG
           valueFrom:
             configMapKeyRef:
               name: {{ template "postfix.fullname" . }}
               key: postfix-custom-config
         ports:
-          - name: smtp
-            containerPort: 25
+        - name: smtp
+          containerPort: 25
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-    {{- with .Values.nodeSelector }}
+      {{- if .Values.metrics.enabled }}
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      - name: spool
+        ## TODO - make this optionally persistent
+        emptyDir: {}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
-    {{- end }}
+      {{- end }}

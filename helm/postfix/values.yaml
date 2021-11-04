@@ -34,10 +34,13 @@ serviceAccount:
 # Docker image
 image:
   repository: aanogueira/postfix-relay
-  tag: 0.0.1
+  tag: 0.0.5
   pullPolicy: IfNotPresent
 
 # Metrics exporter
+# TODO
+# Not working with message:
+# Failed to scrape showq socket: dial unix /var/spool/postfix/public/showq: connect: no such file or directory
 metrics:
   enabled: false
   # Resources needed for the exporter
