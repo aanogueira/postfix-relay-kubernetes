@@ -18,9 +18,31 @@ spec:
       labels:
         app: {{ template "postfix.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.metrics.enabled }}
+      annotations:
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "9154"
+        prometheus.io/scrape: "true"
+      {{- end }}
     spec:
       serviceAccountName: {{ template "postfix.serviceAccountName" . }}
       containers:
+      {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ tpl .Values.metrics.image.tag . }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 9154
+              protocol: TCP
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/log
+          - name: spool
+            mountPath: /var/spool/postfix
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+      {{- end }}
       - name: {{ template "postfix.name" . }}
         image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
         imagePullPolicy: {{ .Values.image.pullPolicy }}

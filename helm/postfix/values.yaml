@@ -33,9 +33,20 @@ serviceAccount:
 
 # Docker image
 image:
-  repository: eldada-docker-examples.bintray.io/postfix-relay
-  tag: 0.6
+  repository: aanogueira/postfix
+  tag: 0.7
   pullPolicy: IfNotPresent
+
+# Metrics exporter
+metrics:
+  enabled: false
+  # Resources needed for the exporter
+  resources: {}
+  # Exporter Docker image
+  image:
+    repository: unikum/postfix_exporter
+    tag: latest
+    pullPolicy: IfNotPresent
 
 # Expose pods with service on port 25
 service:

@@ -18,13 +18,18 @@ echo "===================================="
 
 # Write SMTP credentials
 echo "${TX_SMTP_RELAY_HOST} ${TX_SMTP_RELAY_USERNAME}:${TX_SMTP_RELAY_PASSWORD}" > /etc/postfix/sasl_passwd || exit 1
+# chmod 600 /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_passwd || exit 1
 rm /etc/postfix/sasl_passwd || exit 1
 
 # Set configurations
 postconf 'smtp_sasl_auth_enable = yes' || exit 1
+# postconf 'smtp_tls_security_level = encrypt' || exit 1
+postconf 'smtp_tls_security_level = may' || exit 1
 postconf 'smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd' || exit 1
-postconf 'smtp_sasl_security_options =' || exit 1
+# postconf 'sender_canonical_maps = regexp:/etc/postfix/canonical_maps_sender' || exit 1
+postconf 'inet_protocols = ipv4' || exit 1
+postconf 'smtp_sasl_security_options = noanonymous' || exit 1
 
 # These are required
 postconf "relayhost = ${TX_SMTP_RELAY_HOST}" || exit 1
