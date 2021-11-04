@@ -33,8 +33,8 @@ serviceAccount:
 
 # Docker image
 image:
-  repository: aanogueira/postfix
-  tag: 0.7
+  repository: aanogueira/postfix-relay
+  tag: 0.0.1
   pullPolicy: IfNotPresent
 
 # Metrics exporter

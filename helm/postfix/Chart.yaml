@@ -1,12 +1,13 @@
 apiVersion: v1
-version: 0.1.5
-appVersion: latest
+version: 0.0.1
+appVersion: 0.0.1
 description: A Helm chart for a highly available postfix relay in Kubernetes
+icon: https://raw.githubusercontent.com/halkeye-helm-charts/postfix/master/logo.gif
 name: postfix
 keywords:
 - postfix
 sources:
-- https://github.com/eldada/postfix-relay-kubernetes
+- https://github.com/aanogueira/postfix-relay-kubernetes
 maintainers:
-- name: eldada
-  email: eldada@jfrog.com
+- name: aanogueira
+  email: aanogueira@protonmail.com
