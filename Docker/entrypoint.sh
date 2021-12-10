@@ -36,7 +36,7 @@ postconf "relayhost = ${TX_SMTP_RELAY_HOST}" || exit 1
 postconf "myhostname = ${TX_SMTP_RELAY_MYHOSTNAME}" || exit 1
 postconf 'myorigin = localhost' || exit 1
 
-mydestination = localhost.${TX_SMTP_RELAY_MYHOSTNAME}, localhost, ${TX_SMTP_RELAY_MYHOSTNAME}
+postcon "mydestination = localhost.${TX_SMTP_RELAY_MYHOSTNAME}, localhost, ${TX_SMTP_RELAY_MYHOSTNAME}" || exit 1
 
 # Set allowed networks
 postconf "mynetworks = ${TX_SMTP_RELAY_NETWORKS}" || exit 1
